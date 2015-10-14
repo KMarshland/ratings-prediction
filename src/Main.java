@@ -5,5 +5,6 @@ public class Main {
 
     public static void main(String[] args){
         User.load("users.tsv");
+        System.out.println(User.users.size());
     }
 }
