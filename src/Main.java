@@ -4,10 +4,18 @@
 public class Main {
 
     public static void main(String[] args){
+        loadAll();
+
+//        System.out.println(Rating.getRatings().get(0).getUser().getId());
+    }
+
+    //loads everything and establishes relations
+    static void loadAll(){
         User.load("users.tsv");
         Movie.load("movies.tsv");
         Rating.load("ratings.tsv");
 
-        System.out.println(Rating.getRatings().size());
+        //build the has/belongs to relationships
+        Rating.connectAll();
     }
 }

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -14,12 +13,34 @@ public class Rating {
     private int movieId;
     private int rating;
 
+    private User user;
+    private Movie movie;
+
     public Rating(int userId, int movieId, int rating){
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
 
         ratings.add(this);
+    }
+
+    void connect(){
+        if (user == null){
+            user = User.findById(userId);
+            user.addRating(this);
+        }
+
+        if (movie == null){
+            movie = Movie.findById(movieId);
+            movie.addRating(this);
+        }
+    }
+
+    //establishes connections for all the ratings to their users and movies
+    public static void connectAll(){
+        for (Rating r : ratings){
+            r.connect();
+        }
     }
 
     public static void load(String source){
@@ -41,5 +62,25 @@ public class Rating {
 
     public static void setRatings(ArrayList<Rating> ratings) {
         Rating.ratings = ratings;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 }

@@ -15,13 +15,23 @@ public class Movie {
     private int id;
     private String name;
     private String[] genres;
+    private ArrayList<Rating> ratings;
 
     public Movie(int id, String name, String[] genres){
         this.id = id;
         this.name = name;
         this.genres = genres;
+        this.ratings = new ArrayList<>();
 
         movies.add(this);
+    }
+
+    public void addRating(Rating rating){
+        ratings.add(rating);
+    }
+
+    public static Movie findById(int id){
+        return movies.get(id - 1);
     }
 
     public static void load(String source){

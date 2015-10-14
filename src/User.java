@@ -19,13 +19,23 @@ public class User {
     private int id;
     private int age;
     private Gender gender;
+    private ArrayList<Rating> ratings;
 
     public User(int id, int age, Gender gender){
         this.id = id;
         this.age = age;
         this.gender = gender;
+        this.ratings = new ArrayList<>();
 
         users.add(this);
+    }
+
+    public void addRating(Rating rating){
+        ratings.add(rating);
+    }
+
+    public static User findById(int id){
+        return users.get(id - 1);
     }
 
     public static void load(String source){
@@ -39,6 +49,22 @@ public class User {
                 return "";
             }
         });
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public ArrayList<Rating> getRatings() {
+        return ratings;
     }
 
     public static ArrayList<User> getUsers() {
