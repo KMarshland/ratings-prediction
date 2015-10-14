@@ -5,6 +5,9 @@ public class Main {
 
     public static void main(String[] args){
         User.load("users.tsv");
-        System.out.println(User.users.size());
+        Movie.load("movies.tsv");
+        Rating.load("ratings.tsv");
+
+        System.out.println(Rating.getRatings().size());
     }
 }

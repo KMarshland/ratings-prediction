@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class User {
 
+    //keep track of all the users
     protected static ArrayList<User> users = new ArrayList<>();
 
     public enum Gender{
@@ -14,9 +15,10 @@ public class User {
         Female
     }
 
-    int id;
-    int age;
-    Gender gender;
+    //store info about each user
+    private int id;
+    private int age;
+    private Gender gender;
 
     public User(int id, int age, Gender gender){
         this.id = id;
