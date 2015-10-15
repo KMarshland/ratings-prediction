@@ -5,7 +5,7 @@
 import java.util.function.Function;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Distanceable {
 
     //keep track of all the users
     protected static ArrayList<User> users = new ArrayList<>();
@@ -28,6 +28,18 @@ public class User {
         this.ratings = new ArrayList<>();
 
         users.add(this);
+    }
+
+    public float distanceTo(Distanceable other, float[] weights) throws Exception {
+        User otherUser = (User) other;
+
+        if (weights.length != 3){
+            throw new Exception("Wrong number of weights. Expected 3, got: " + weights.length);
+        }
+
+        return weights[0] * (this.gender == otherUser.gender ? 1 : 0) +
+                weights[1] * Math.abs(this.getAge() - otherUser.getAge()) +
+                weights[2] * (this.getAge() - otherUser.getAge()) ;
     }
 
     public void addRating(Rating rating){
