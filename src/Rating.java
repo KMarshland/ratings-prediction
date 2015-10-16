@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -6,7 +7,7 @@ import java.util.function.Function;
  */
 public class Rating {
     //keep track of all the ratings
-    protected static ArrayList<Rating> ratings = new ArrayList<>();
+    protected static List<Rating> ratings = new ArrayList<>();
 
     //store info about each rating
     private int userId;
@@ -56,11 +57,11 @@ public class Rating {
         });
     }
 
-    public static ArrayList<Rating> getRatings() {
+    public static List<Rating> getRatings() {
         return ratings;
     }
 
-    public static void setRatings(ArrayList<Rating> ratings) {
+    public static void setRatings(List<Rating> ratings) {
         Rating.ratings = ratings;
     }
 

@@ -2,13 +2,14 @@
  * Created by kaimarshland on 10/14/15.
  */
 
-import java.util.function.Function;
 import java.util.ArrayList;
+import java.util.function.Function;
+import java.util.List;
 
 public class User implements Distanceable {
 
     //keep track of all the users
-    protected static ArrayList<User> users = new ArrayList<>();
+    protected static List<User> users = new ArrayList<>();
 
     public enum Gender{
         Male,
@@ -19,7 +20,7 @@ public class User implements Distanceable {
     private int id;
     private int age;
     private Gender gender;
-    private ArrayList<Rating> ratings;
+    private List<Rating> ratings;
 
     public User(int id, int age, Gender gender){
         this.id = id;
@@ -34,7 +35,7 @@ public class User implements Distanceable {
         User otherUser = (User) other;
 
         if (weights.length != 3){
-            throw new Exception("Wrong number of weights. Expected 3, got: " + weights.length);
+            throw new IllegalArgumentException("Wrong number of weights. Expected 3, got: " + weights.length);
         }
 
         return weights[0] * (this.gender == otherUser.gender ? 1 : 0) +
@@ -75,15 +76,15 @@ public class User implements Distanceable {
         return gender;
     }
 
-    public ArrayList<Rating> getRatings() {
+    public List<Rating> getRatings() {
         return ratings;
     }
 
-    public static ArrayList<User> getUsers() {
+    public static List<User> getUsers() {
         return users;
     }
 
-    public static void setUsers(ArrayList<User> users) {
+    public static void setUsers(List<User> users) {
         User.users = users;
     }
 

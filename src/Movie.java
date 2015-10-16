@@ -1,6 +1,7 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -9,13 +10,13 @@ import java.util.function.Function;
 public class Movie implements Distanceable {
 
     //keep track of all the movies
-    protected static ArrayList<Movie> movies = new ArrayList<>();
+    protected static List<Movie> movies = new ArrayList<>();
 
     //store info about each movie
     private int id;
     private String name;
     private String[] genres;
-    private ArrayList<Rating> ratings;
+    private List<Rating> ratings;
 
     public Movie(int id, String name, String[] genres){
         this.id = id;
@@ -29,8 +30,8 @@ public class Movie implements Distanceable {
     public float distanceTo(Distanceable other, float[] weights) throws Exception {
         Movie otherMovie = (Movie) other;
 
-        if (weights.length != 3){
-            throw new Exception("Wrong number of weights. Expected 3, got: " + weights.length);
+        if (weights.length != 2){
+            throw new IllegalArgumentException("Wrong number of weights. Expected 2, got: " + weights.length);
         }
 
         //find the longest substring in common between the two names (Eg "Mad Max" and "Mad Max: Fury Road" would give "Mad Max")
@@ -83,11 +84,11 @@ public class Movie implements Distanceable {
         });
     }
 
-    public static ArrayList<Movie> getMovies() {
+    public static List<Movie> getMovies() {
         return movies;
     }
 
-    public static void setMovies(ArrayList<Movie> movies) {
+    public static void setMovies(List<Movie> movies) {
         Movie.movies = movies;
     }
 }

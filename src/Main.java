@@ -4,7 +4,9 @@
 public class Main {
 
     public static void main(String[] args){
+        long startTime = System.currentTimeMillis();
         loadAll();
+        System.out.println((System.currentTimeMillis() - startTime) + "ms to start");
     }
 
     //loads everything and establishes relations
