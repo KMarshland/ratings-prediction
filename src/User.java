@@ -34,13 +34,12 @@ public class User implements Distanceable {
     public float distanceTo(Distanceable other, float[] weights) throws Exception {
         User otherUser = (User) other;
 
-        if (weights.length != 3){
-            throw new IllegalArgumentException("Wrong number of weights. Expected 3, got: " + weights.length);
+        if (weights.length != 2){
+            throw new IllegalArgumentException("Wrong number of weights. Expected 2, got: " + weights.length);
         }
 
         return weights[0] * (this.gender == otherUser.gender ? 1 : 0) +
-                weights[1] * Math.abs(this.getAge() - otherUser.getAge()) +
-                weights[2] * (this.getAge() - otherUser.getAge()) ;
+                weights[1] * Math.abs(this.getAge() - otherUser.getAge()) ;
     }
 
     public void addRating(Rating rating){
