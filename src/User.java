@@ -31,15 +31,30 @@ public class User implements Distanceable {
         users.add(this);
     }
 
-    public float distanceTo(Distanceable other, float[] weights) throws Exception {
+    //gives a list of all the movies that user has rated
+    public List<Movie> ratedMovies(){
+        List<Movie> rated = new ArrayList<>();
+        for (Rating rating : ratings){
+            rated.add(rating.getMovie());
+        }
+        return rated;
+    }
+
+    //figures out how the user rated that movie
+    public double ratingOf(Movie movie){
+        for (Rating rating : ratings){
+            if (rating.getMovieId() == movie.getId()){
+                return rating.getRating();
+            }
+        }
+        return 0;
+    }
+
+    public double distanceTo(Distanceable other, double weight1, double weight2) {
         User otherUser = (User) other;
 
-        if (weights.length != 2){
-            throw new IllegalArgumentException("Wrong number of weights. Expected 2, got: " + weights.length);
-        }
-
-        return weights[0] * (this.gender == otherUser.gender ? 1 : 0) +
-                weights[1] * Math.abs(this.getAge() - otherUser.getAge()) ;
+        return weight1 * (this.gender == otherUser.gender ? 1 : 0) +
+                weight2 * Math.abs(this.getAge() - otherUser.getAge()) ;
     }
 
     public void addRating(Rating rating){

@@ -3,6 +3,6 @@
  */
 public interface Distanceable {
 
-    public float distanceTo(Distanceable other, float[] weights) throws Exception;
+    public double distanceTo(Distanceable other, double weight1, double weight2);
 
 }

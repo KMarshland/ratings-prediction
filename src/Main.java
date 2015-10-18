@@ -7,6 +7,7 @@ public class Main {
         long startTime = System.currentTimeMillis();
         loadAll();
         System.out.println((System.currentTimeMillis() - startTime) + "ms to start");
+
     }
 
     //loads everything and establishes relations

@@ -27,12 +27,8 @@ public class Movie implements Distanceable {
         movies.add(this);
     }
 
-    public float distanceTo(Distanceable other, float[] weights) throws Exception {
+    public double distanceTo(Distanceable other, double weight1, double weight2) {
         Movie otherMovie = (Movie) other;
-
-        if (weights.length != 2){
-            throw new IllegalArgumentException("Wrong number of weights. Expected 2, got: " + weights.length);
-        }
 
         //find the longest substring in common between the two names (Eg "Mad Max" and "Mad Max: Fury Road" would give "Mad Max")
 
@@ -59,8 +55,8 @@ public class Movie implements Distanceable {
             }
         }
 
-        return weights[0] * longestSubstring.length() +
-                weights[1] * genresMatches;
+        return weight1 * longestSubstring.length() +
+                weight2 * genresMatches;
     }
 
     public void addRating(Rating rating){
@@ -90,5 +86,21 @@ public class Movie implements Distanceable {
 
     public static void setMovies(List<Movie> movies) {
         Movie.movies = movies;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String[] getGenres() {
+        return genres;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
     }
 }
