@@ -3,6 +3,7 @@
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Function;
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class User implements Distanceable {
     private int age;
     private Gender gender;
     private List<Rating> ratings;
+    private List<Movie> ratedMovies;
+    private HashMap<Integer, Double> ratingsOf;
 
     public User(int id, int age, Gender gender){
         this.id = id;
@@ -32,21 +35,43 @@ public class User implements Distanceable {
     }
 
     //gives a list of all the movies that user has rated
-    public List<Movie> ratedMovies(){
-        List<Movie> rated = new ArrayList<>();
-        for (Rating rating : ratings){
-            rated.add(rating.getMovie());
+    public List<Movie> ratedMovies(List<Rating> trainingSet){
+        if (ratedMovies == null){
+            ratedMovies = new ArrayList<>();
+            for (Rating rating : ratings){
+                if (!ratedMovies.contains(rating.getMovie())) {
+                    ratedMovies.add(rating.getMovie());
+                }
+            }
         }
-        return rated;
+
+        //TODO: prevent this from being contaminated
+        return ratedMovies;
+
+//        List<Movie> rated = new ArrayList<>();
+//        for (Movie movie : ratedMovies){
+//            if (trainingSet.contains(rating)) {
+//                rated.add(rating.getMovie());
+//            }
+//        }
+//        return rated;
     }
 
     //figures out how the user rated that movie
-    public double ratingOf(Movie movie){
-        for (Rating rating : ratings){
-            if (rating.getMovieId() == movie.getId()){
-                return rating.getRating();
+    public double ratingOf(Movie movie, List<Rating> trainingSet){
+
+        //TODO: prevent this from being contaminated
+        if (ratingsOf == null){
+            ratingsOf = new HashMap<>();
+            for (Rating rating : ratings) {
+                ratingsOf.put(rating.getMovieId(), (double)rating.getRating());
             }
         }
+
+        if (ratingsOf.containsKey(movie.getId())){
+            return ratingsOf.get(movie.getId());
+        }
+
         return 0;
     }
 

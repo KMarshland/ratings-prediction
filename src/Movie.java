@@ -27,11 +27,25 @@ public class Movie implements Distanceable {
         movies.add(this);
     }
 
+    public double averageRating(List<Rating> trainingSet){
+        double total = 0;
+        double sum = 0;
+        for (Rating r : ratings){
+            if (trainingSet.contains(r)) {
+                total += r.getRating();
+                sum ++;
+            }
+        }
+        return total/sum;
+    }
+
     public double distanceTo(Distanceable other, double weight1, double weight2) {
         Movie otherMovie = (Movie) other;
 
+
         //find the longest substring in common between the two names (Eg "Mad Max" and "Mad Max: Fury Road" would give "Mad Max")
 
+        /*
         //take the shorter of the two names
         String shorterName;
         String longerName;
@@ -43,7 +57,7 @@ public class Movie implements Distanceable {
             longerName = this.name;
         }
 
-        String longestSubstring = Main.longestSubstring(shorterName.toLowerCase(), longerName.toLowerCase());
+        String longestSubstring = Main.longestSubstring(shorterName.toLowerCase(), longerName.toLowerCase());*/
 
         //find the number of genres that they have in common
         int genresMatches = 0;
@@ -55,7 +69,7 @@ public class Movie implements Distanceable {
             }
         }
 
-        return weight1 * longestSubstring.length() +
+        return //weight1 * longestSubstring.length() +
                 weight2 * genresMatches;
     }
 
