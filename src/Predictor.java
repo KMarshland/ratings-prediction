@@ -103,8 +103,6 @@ public class Predictor {
                 }
             }
         }
-
-        //TODO: do something when totalCutoffUsers is 0
         similarUserRating /= (double)totalCutoffUsers;
 
 
@@ -120,13 +118,25 @@ public class Predictor {
                 averageMovieRating += user.ratingOf(compared);
             }
         }
-        //TODO: do something when this is 0
         averageMovieRating /= (double)(totalCutoffMovies);
 
 
-        return (weights[0] * averageRatings.get(movie.getId()) + //average rating of that movie
-                weights[1] * similarUserRating + //how similar users rated that movie
-                weights[2] * averageMovieRating) //how that user rated similar movies
-                / (weights[0] + weights[1] + weights[2]); //normalize the rating
+        //average rating of that movie
+        double result = weights[0] * averageRatings.get(movie.getId());
+        double dividedBy = weights[0];
+
+        //how similar users rated that movie, if any did
+        if (totalCutoffUsers > 0){
+            result += weights[1] * similarUserRating;
+            dividedBy += weights[1];
+        }
+        //how that user rated similar movies, if there were any
+        if (totalCutoffMovies > 0){
+            result += weights[2] * averageMovieRating;
+            dividedBy += weights[2];
+        }
+
+
+        return result/dividedBy; //normalize the rating
     }
 }
