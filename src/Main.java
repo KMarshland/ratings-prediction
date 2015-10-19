@@ -6,6 +6,9 @@ public class Main {
     public static void main(String[] args){
         long startTime = System.currentTimeMillis();
         loadAll();
+
+        System.out.println(new Predictor(new double[]{1, 1, 1, 1, 1, 1, 1, 1, 1}).test(1));
+
         System.out.println((System.currentTimeMillis() - startTime) + "ms to start");
 
     }

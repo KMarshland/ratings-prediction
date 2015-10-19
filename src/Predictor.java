@@ -31,7 +31,6 @@ public class Predictor {
     //trains the predictor on the given set of data
     public Predictor train(List<Rating> ratings){
 
-
         //calculate the average ratings for each movie
         averageRatings = new HashMap<>();
         HashMap<Integer, Integer> totalEntries = new HashMap<>();
@@ -113,7 +112,7 @@ public class Predictor {
         double averageMovieRating = 0;
         int totalCutoffMovies = 0;
         for (Movie compared : user.ratedMovies()){
-            double distance = user.distanceTo(compared, weights[6], weights[7]);
+            double distance = movie.distanceTo(compared, weights[6], weights[7]);
 
             if (distance < weights[8]){
                 totalCutoffMovies ++;
@@ -121,12 +120,13 @@ public class Predictor {
                 averageMovieRating += user.ratingOf(compared);
             }
         }
+        //TODO: do something when this is 0
         averageMovieRating /= (double)(totalCutoffMovies);
 
 
-        return weights[0] * averageRatings.get(movie.getId()) + //average rating of that movie
+        return (weights[0] * averageRatings.get(movie.getId()) + //average rating of that movie
                 weights[1] * similarUserRating + //how similar users rated that movie
-                weights[2] * averageMovieRating //how that user rated similar movies
-                ;
+                weights[2] * averageMovieRating) //how that user rated similar movies
+                / (weights[0] + weights[1] + weights[2]); //normalize the rating
     }
 }
