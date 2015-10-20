@@ -11,6 +11,7 @@ Obviously, this strategy requires a large number (8 so far) of coefficients to b
 ### Possible improvements
 - Check if the user is more critical than average. For example, if a user rates movies on average 0.5 stars lower than average, you might predict the average rating for a movie minus 0.5 stars.
 - Instead of just how similar users rated that movie, check how similar users rated similar movies
+- Improve the distance algorithm for movies, possibly taking into account the name
 
 
 ## Technical
