@@ -4,6 +4,8 @@
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.HashSet;
 import java.util.function.Function;
 import java.util.List;
 
@@ -22,8 +24,8 @@ public class User implements Distanceable {
     private int age;
     private Gender gender;
     private List<Rating> ratings;
-    private List<Movie> ratedMovies;
-    private HashMap<Integer, Double> ratingsOf;
+    private HashMap<Movie, Rating> ratedMovies;
+    private HashMap<Integer, Rating> ratingsOf;
 
     public User(int id, int age, Gender gender){
         this.id = id;
@@ -35,51 +37,52 @@ public class User implements Distanceable {
     }
 
     //gives a list of all the movies that user has rated
-    public List<Movie> ratedMovies(List<Rating> trainingSet){
+    public List<Movie> ratedMovies(HashSet<Rating> trainingSet){
         if (ratedMovies == null){
-            ratedMovies = new ArrayList<>();
+            ratedMovies = new HashMap<>();
             for (Rating rating : ratings){
-                if (!ratedMovies.contains(rating.getMovie())) {
-                    ratedMovies.add(rating.getMovie());
+                Movie movie = rating.getMovie();
+                if (!ratedMovies.containsKey(movie)) {
+                    ratedMovies.put(movie, rating);
                 }
             }
         }
 
-        //TODO: prevent this from being contaminated
-        return ratedMovies;
-
-//        List<Movie> rated = new ArrayList<>();
-//        for (Movie movie : ratedMovies){
-//            if (trainingSet.contains(rating)) {
-//                rated.add(rating.getMovie());
-//            }
-//        }
-//        return rated;
-    }
-
-    //figures out how the user rated that movie
-    public double ratingOf(Movie movie, List<Rating> trainingSet){
-
-        //TODO: prevent this from being contaminated
-        if (ratingsOf == null){
-            ratingsOf = new HashMap<>();
-            for (Rating rating : ratings) {
-                ratingsOf.put(rating.getMovieId(), (double)rating.getRating());
+        List<Movie> rated = new ArrayList<>();
+        for (Map.Entry<Movie, Rating> entry : ratedMovies.entrySet()) {
+            Movie movie = entry.getKey();
+            Rating value = entry.getValue();
+            if (trainingSet.contains(value)){
+                rated.add(movie);
             }
         }
 
-        if (ratingsOf.containsKey(movie.getId())){
-            return ratingsOf.get(movie.getId());
-        }
-
-        return 0;
+        return rated;
     }
 
-    public double distanceTo(Distanceable other, double weight1, double weight2) {
+    //figures out how the user rated that movie
+    public double ratingOf(Movie movie, HashSet<Rating> trainingSet){
+
+        if (ratingsOf == null){
+            ratingsOf = new HashMap<>();
+            for (Rating rating : ratings) {
+                ratingsOf.put(rating.getMovieId(), rating);
+            }
+        }
+
+        Rating r = ratingsOf.get(movie.getId());
+        if (r != null && trainingSet.contains(r)) {
+            return r.getRating();
+        }
+
+        return Double.NaN;
+    }
+
+    public double distanceTo(Distanceable other, double genderWeight, double ageWeight) {
         User otherUser = (User) other;
 
-        return weight1 * (this.gender == otherUser.gender ? 1 : 0) +
-                weight2 * Math.abs(this.getAge() - otherUser.getAge()) ;
+        return genderWeight * (this.gender == otherUser.gender ? 1 : 0) +
+                ageWeight * Math.abs(this.getAge() - otherUser.getAge()) ;
     }
 
     public void addRating(Rating rating){

@@ -1,6 +1,7 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;
 
@@ -15,19 +16,19 @@ public class Movie implements Distanceable {
     //store info about each movie
     private int id;
     private String name;
-    private String[] genres;
+    private HashSet<String> genres;
     private List<Rating> ratings;
 
     public Movie(int id, String name, String[] genres){
         this.id = id;
         this.name = name;
-        this.genres = genres;
+        this.genres = new HashSet<>(Arrays.asList(genres));
         this.ratings = new ArrayList<>();
 
         movies.add(this);
     }
 
-    public double averageRating(List<Rating> trainingSet){
+    public double averageRating(HashSet<Rating> trainingSet){
         double total = 0;
         double sum = 0;
         for (Rating r : ratings){
@@ -39,7 +40,7 @@ public class Movie implements Distanceable {
         return total/sum;
     }
 
-    public double distanceTo(Distanceable other, double weight1, double weight2) {
+    public double distanceTo(Distanceable other, double nameWeight, double genreWeight) {
         Movie otherMovie = (Movie) other;
 
 
@@ -60,7 +61,7 @@ public class Movie implements Distanceable {
         String longestSubstring = Main.longestSubstring(shorterName.toLowerCase(), longerName.toLowerCase());*/
 
         //find the number of genres that they have in common
-        int genresMatches = 0;
+        double genresMatches = 0;
         for (String genre : genres){ // O(n^2), which sucks, but at least n <= 4
             for (String otherGenre : otherMovie.genres){
                 if (genre.equals(otherGenre)){
@@ -69,8 +70,10 @@ public class Movie implements Distanceable {
             }
         }
 
-        return //weight1 * longestSubstring.length() +
-                weight2 * genresMatches;
+//        genresMatches /= Math.min(genres.size(), otherMovie.genres.size());
+
+        return //nameWeight * longestSubstring.length() +
+                genreWeight * genresMatches;
     }
 
     public void addRating(Rating rating){
@@ -110,7 +113,7 @@ public class Movie implements Distanceable {
         return name;
     }
 
-    public String[] getGenres() {
+    public HashSet<String> getGenres() {
         return genres;
     }
 

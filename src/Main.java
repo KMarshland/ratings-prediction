@@ -7,12 +7,9 @@ public class Main {
 
     public static void main(String[] args){
 
-
         loadAll();
 
-        long startTime = System.currentTimeMillis();
-
-        int sampleSize = 100;
+        int sampleSize = 50;
 
         HashMap<String, Double> cachedAccuracies = new HashMap<>();
 
@@ -22,6 +19,8 @@ public class Main {
         cachedAccuracies.put(champion.stringifyWeights(), championError); //save the champion
 
         int testedPredictors = 0;
+
+        long startTime = System.currentTimeMillis();
 
         //keep on going until it has an acceptable accuracy
         while (championError > -1) {

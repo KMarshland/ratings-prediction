@@ -8,7 +8,7 @@ public class Predictor {
 
     double[] weights;
 
-    List<Rating> trainingSet;
+    HashSet<Rating> trainingSet;
 
     public Predictor(double[] weights){
         this.weights = weights;
@@ -25,8 +25,8 @@ public class Predictor {
             double[] weightsIncreased = Arrays.copyOf(weights, weights.length);
             double[] weightsDecreased = Arrays.copyOf(weights, weights.length);
 
-            weightsIncreased[i] += 0.01;
-            weightsDecreased[i] -= 0.01;
+            weightsIncreased[i] += Math.random();
+            weightsDecreased[i] -= Math.random();
 
             children.add(new Predictor(weightsIncreased));
             children.add(new Predictor(weightsDecreased));
@@ -45,7 +45,8 @@ public class Predictor {
     //trains it on all but n ratings and returns the ratings it did not train on
     public List<Rating> train(int sampleSize){
         Collections.shuffle(Rating.ratings); //to randomize the order
-        trainingSet = Rating.ratings.subList(sampleSize, Rating.ratings.size() - 1);
+        trainingSet = new HashSet<>();
+        trainingSet.addAll(Rating.ratings.subList(sampleSize, Rating.ratings.size() - 1));
         return Rating.ratings.subList(0, sampleSize);
     }
 
@@ -76,6 +77,11 @@ public class Predictor {
                 //we want to minimize the absolute difference between
                 total += Math.abs(got - expected);
                 sum++;
+
+//                if (got == expected){
+//                    System.err.println("Got is: " + got);
+//                    throw new RuntimeException("Fuck you too");
+//                }
             }
         }
 
@@ -99,7 +105,7 @@ public class Predictor {
 
                 if (distance < weights[5]) {
                     double rating = compared.ratingOf(movie, trainingSet);
-                    if (rating > 0) {
+                    if (!Double.isNaN(rating)) {
                         totalCutoffUsers++;
                         similarUserRating += rating;
                     }
