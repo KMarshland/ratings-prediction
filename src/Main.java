@@ -11,43 +11,33 @@ public class Main {
 
         int sampleSize = 50;
 
-        HashMap<String, Double> cachedAccuracies = new HashMap<>();
-
         //start it with equal weights
-        Predictor champion = new Predictor(new double[]{1, 1, 1, 1, 1, 1, 1, 1, 1});
-        double championError = champion.test(sampleSize);
-        cachedAccuracies.put(champion.stringifyWeights(), championError); //save the champion
+        Predictor champion = new Predictor(new double[]{1, 1, 1, 1, 1, 1, 1, 1});
+        double championAccuracy = champion.test(sampleSize);
 
         int testedPredictors = 0;
 
         long startTime = System.currentTimeMillis();
 
         //keep on going until it has an acceptable accuracy
-        while (championError > -1) {
+        while (championAccuracy < 0.95) {
             //make it recalculate the champion
-            championError = champion.test(sampleSize);
+            championAccuracy = champion.test(sampleSize);
 
             for (Predictor child : champion.getChildren()) {
-                double childError;
-                if (false && cachedAccuracies.containsKey(child.stringifyWeights())){
-                    childError = cachedAccuracies.get(child.stringifyWeights());
-                } else {
-                    childError = child.test(sampleSize);
-//                    System.out.println("Child error: " + childError);
-                    cachedAccuracies.put(child.stringifyWeights(), childError);
-                }
-                if (childError < championError) {
+                double childAccuracy = child.test(sampleSize);
+                if (childAccuracy > championAccuracy) {//if it had greater accuracy
                     champion = child;
-                    championError = childError;
-//                    System.out.println("New champion: " + childError);
+                    championAccuracy = childAccuracy;
                 }
                 testedPredictors ++;
             }
 
             //give the champion so far
-            System.out.println("Error: " + championError + "; average time per test: " +
-                            ((System.currentTimeMillis() - startTime) / testedPredictors) + "ms; " +
-                            " current champion: " + champion.stringifyWeights()
+            System.out.println("" +
+                            "Accuracy: " + Math.round(championAccuracy * 1000)/10.0 + "%; " +
+                            "Average time per test: " + ((System.currentTimeMillis() - startTime) / testedPredictors) + "ms; " +
+                            "Current champion: " + champion.stringifyWeights()
             );
         }
 

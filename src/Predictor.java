@@ -31,22 +31,14 @@ public class Predictor {
             double[] weightsIncreased = Arrays.copyOf(weights, weights.length);
             double[] weightsDecreased = Arrays.copyOf(weights, weights.length);
 
-            weightsIncreased[i] += 1;
-            weightsDecreased[i] -= 1;
+            weightsIncreased[i] += Math.random();
+            weightsDecreased[i] -= Math.random();
 
             children.add(new Predictor(weightsIncreased));
             children.add(new Predictor(weightsDecreased));
         }
         return children;
     }
-
-    //trains it on % of ratings and returns the ones it didn't train on
-//    public List<Rating> train(double samplePercentage){
-//        if (samplePercentage < 0f || samplePercentage > 1f){
-//            throw new IllegalArgumentException("Sample size must be between 0 and 1");
-//        }
-//        return train((int)(samplePercentage * Rating.getRatings().size()));
-//    }
 
     //trains it on all but n ratings and returns the ratings it did not train on
     public List<Rating> train(int sampleSize){
@@ -56,45 +48,43 @@ public class Predictor {
         return Rating.ratings.subList(0, sampleSize);
     }
 
-    //gives the average difference between predicted and actual ratings
-//    public double test (double samplePercentage){
-//        //train it on the given sample size
-//        return test(train(samplePercentage));
-//    }
+    public double test(int sampleSize){
+        return test(sampleSize, 2000/sampleSize);
+    }
 
     //gives the average difference between predicted and actual ratings
-    public double test(int sampleSize){
+    public double test(int sampleSize, int trials){
         //train it on the given sample size
-        return test(train(sampleSize));
+        double total = 0;
+        double totalAccuracy = 0;
+        for (int i = 0; i < trials; i++){
+            totalAccuracy += test(train(sampleSize));
+        }
+        return totalAccuracy/((double)trials);
     }
 
     //tests the given ratings. Assumes it's already been trained
     public double test(List<Rating> ratingsToTest){
-        double total = 0;
+//        double total = 0;
+        int numberAccurate = 0;
         double sum = 0;
 
         //test all the predictions
-        double[] differences = new double[ratingsToTest.size()];
         for (int i = 0; i < ratingsToTest.size(); i++){
             double expected = (double)ratingsToTest.get(i).getRating();
             double got = predict(ratingsToTest.get(i).getUser(), ratingsToTest.get(i).getMovie());
 
             if (!Double.isNaN(got)) {
-                //we want to minimize the absolute difference between
-                total += Math.abs(got - expected);
+                double difference = Math.abs(got - expected);
                 sum++;
 
-//                if (got == expected){
-//                    System.err.println("Got is: " + got);
-//                    throw new RuntimeException("Fuck you too");
-//                }
+                if (difference < 0.5){
+                    numberAccurate ++;
+                }
             }
         }
 
-        double result = total/sum;
-//        System.out.println("Test result: " + result);
-
-        return result;
+        return numberAccurate/sum;
     }
 
     public double predict(User user, Movie movie){
@@ -125,9 +115,9 @@ public class Predictor {
         double similarMovieRating = 0;
         int totalCutoffMovies = 0;
         for (Movie compared : user.ratedMovies(trainingSet)){
-            double distance = movie.distanceTo(compared, weights[6], weights[7]);
+            double distance = movie.distanceTo(compared, 0, weights[6]);
 
-            if (distance < weights[8]){
+            if (distance < weights[7]){
                 totalCutoffMovies ++;
                 similarMovieRating += user.ratingOf(compared, trainingSet);
             }
