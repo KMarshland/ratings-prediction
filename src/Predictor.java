@@ -15,7 +15,13 @@ public class Predictor {
     }
 
     public String stringifyWeights(){
-        return Arrays.toString(weights);
+        String result = "";
+
+        for (double d : weights){
+            result += (Math.round(d * 100)/100.0) + ", ";
+        }
+
+        return result;
     }
 
     //creates children with the weights varied
@@ -25,8 +31,8 @@ public class Predictor {
             double[] weightsIncreased = Arrays.copyOf(weights, weights.length);
             double[] weightsDecreased = Arrays.copyOf(weights, weights.length);
 
-            weightsIncreased[i] += Math.random();
-            weightsDecreased[i] -= Math.random();
+            weightsIncreased[i] += 1;
+            weightsDecreased[i] -= 1;
 
             children.add(new Predictor(weightsIncreased));
             children.add(new Predictor(weightsDecreased));

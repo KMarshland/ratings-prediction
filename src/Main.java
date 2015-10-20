@@ -24,6 +24,9 @@ public class Main {
 
         //keep on going until it has an acceptable accuracy
         while (championError > -1) {
+            //make it recalculate the champion
+            championError = champion.test(sampleSize);
+
             for (Predictor child : champion.getChildren()) {
                 double childError;
                 if (false && cachedAccuracies.containsKey(child.stringifyWeights())){
