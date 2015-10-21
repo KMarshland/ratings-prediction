@@ -27,6 +27,8 @@ public class User implements Distanceable {
     private HashMap<Movie, Rating> ratedMovies;
     private HashMap<Integer, Rating> ratingsOf;
 
+    private double criticality;
+
     public User(int id, int age, Gender gender){
         this.id = id;
         this.age = age;
@@ -34,20 +36,24 @@ public class User implements Distanceable {
         this.ratings = new ArrayList<>();
 
         users.add(this);
+
+        criticality = Double.NaN;
     }
 
     //whether this user is more or less critical than average
     public double criticality(HashSet<Rating> trainingSet){
-        //TODO: cache this
-        double total = 0;
-        double sum = 0;
-        for (Rating rating : ratings){
-            if (trainingSet.contains(rating)){
-                total += rating.getRating() - rating.getMovie().averageRating(trainingSet);
-                sum ++;
+        if (Double.isNaN(criticality)) {
+            double total = 0;
+            double sum = 0;
+            for (Rating rating : ratings) {
+                if (trainingSet.contains(rating)) {
+                    total += rating.getRating() - rating.getMovie().averageRating(trainingSet);
+                    sum++;
+                }
             }
+            criticality = total / sum;
         }
-        return total/sum;
+        return criticality;
     }
 
     //gives a list of all the movies that user has rated

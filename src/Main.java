@@ -12,8 +12,10 @@ public class Main {
         int sampleSize = 50;
 
         //start it with equal weights
-        Predictor champion = new Predictor(new double[]{1, 1, 1, 1, 1, 1, 1, 1});
+        Predictor champion = new Predictor(new double[]{1.27, -0.06, 0.0, 1.92, 1.75, 0.6, 1.13, -1.15});
         double championAccuracy = champion.test(sampleSize);
+
+        System.out.println("Initial accuracy: " + championAccuracy);
 
         int testedPredictors = 0;
 
