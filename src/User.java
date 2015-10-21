@@ -36,6 +36,20 @@ public class User implements Distanceable {
         users.add(this);
     }
 
+    //whether this user is more or less critical than average
+    public double criticality(HashSet<Rating> trainingSet){
+        //TODO: cache this
+        double total = 0;
+        double sum = 0;
+        for (Rating rating : ratings){
+            if (trainingSet.contains(rating)){
+                total += rating.getRating() - rating.getMovie().averageRating(trainingSet);
+                sum ++;
+            }
+        }
+        return total/sum;
+    }
+
     //gives a list of all the movies that user has rated
     public List<Movie> ratedMovies(HashSet<Rating> trainingSet){
         if (ratedMovies == null){

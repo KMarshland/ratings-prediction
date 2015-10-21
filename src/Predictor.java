@@ -27,7 +27,7 @@ public class Predictor {
     //creates children with the weights varied
     public List<Predictor> getChildren(){
         List<Predictor> children = new ArrayList<>();
-        for (int i =0; i < weights.length; i++){
+        for (int i = 0; i < weights.length; i++){
             double[] weightsIncreased = Arrays.copyOf(weights, weights.length);
             double[] weightsDecreased = Arrays.copyOf(weights, weights.length);
 
@@ -126,7 +126,7 @@ public class Predictor {
 
 
         //average rating of that movie
-        double result = weights[0] * movie.averageRating(trainingSet);
+        double result = weights[0] * (movie.averageRating(trainingSet) + user.criticality(trainingSet));
         double dividedBy = weights[0];
 
         //how similar users rated that movie, if any did
