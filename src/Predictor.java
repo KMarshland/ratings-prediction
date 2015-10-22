@@ -14,7 +14,7 @@ public class Predictor {
         RMSError
     }
 
-    static TestMode testMode = TestMode.Accuracy;
+    static TestMode testMode = TestMode.RMSError;
 
     double[] weights;
 
@@ -48,6 +48,11 @@ public class Predictor {
             children.add(new Predictor(weightsDecreased));
         }
         return children;
+    }
+
+    public void trainOnAll(){
+        trainingSet = new HashSet<>();
+        trainingSet.addAll(Rating.ratings);
     }
 
     //trains it on all but n ratings and returns the ratings it did not train on

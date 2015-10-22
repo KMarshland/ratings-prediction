@@ -1,4 +1,7 @@
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.function.Function;
 
 /**
  * Created by kaimarshland on 10/14/15.
@@ -9,10 +12,41 @@ public class Main {
 
         loadAll();
 
-        int sampleSize = 50;
-
         //start it with equal weights
-        Predictor champion = new Predictor(new double[]{2.57, 0.69, -0.41, 1.0, 0.09, 3.82, 1.82, 2.17, 4.03});
+        Predictor champion = new Predictor(new double[]{2.57, 0.38, -0.81, -0.03, 0.96, 3.36, 2.69, 2.37, 3.54});
+
+//        runEvolution(champion);
+        predict(champion, "data/predict.tsv", "out/prediction.tsv");
+    }
+
+    static void predict(Predictor predictor, String predictionFilePath, String outFile){
+        predictor.trainOnAll();
+        try {
+            PrintWriter writer = new PrintWriter(outFile, "UTF-8");
+            writer.println("userID\tmovieID\trating");
+
+            new Loader(predictionFilePath, new Function<String[], String>() {
+                public String apply(String[] parts) {
+
+                    long prediction = Math.round(predictor.predict(
+                            User.findById(Integer.parseInt(parts[0])),
+                            Movie.findById(Integer.parseInt(parts[1]))
+                    ));
+
+                    writer.println(parts[0] + "\t" + parts[1] + "\t" + prediction);
+
+                    return "";
+                }
+            });
+            writer.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    //runs an evolutionary algorithm to vary the wieghts
+    static void runEvolution(Predictor champion){
+        int sampleSize = 50;
         double championResult = champion.test(sampleSize);
 
         System.out.println("Initial result: " + championResult);
@@ -31,7 +65,7 @@ public class Main {
                 if (Predictor.testMode == Predictor.TestMode.Accuracy ?
                         (childResult > championResult) :
                         (childResult < championResult)
-                ) {//if it had greater accuracy
+                        ) {//if it had greater accuracy
                     champion = child;
                     championResult = childResult;
                 }
@@ -40,16 +74,15 @@ public class Main {
 
             //give the champion so far
             System.out.println("" +
-                    (Predictor.testMode == Predictor.TestMode.Accuracy ?
-                                "Accuracy: " + Math.round(championResult * 1000)/10.0 + "%" :
-                                "Error: " + championResult) + "; "  +
+                            (Predictor.testMode == Predictor.TestMode.Accuracy ?
+                                    "Accuracy: " + Math.round(championResult * 1000)/10.0 + "%" :
+                                    "Error: " + championResult) + "; "  +
                             "Average time per test: " + ((System.currentTimeMillis() - startTime) / testedPredictors) + "ms; " +
                             "Current champion: " + champion.stringifyWeights()
             );
         }
 
         System.out.println((System.currentTimeMillis() - startTime) + "ms to test");
-
     }
 
     //loads everything and establishes relations
