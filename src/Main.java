@@ -10,13 +10,17 @@ public class Main {
 
     public static void main(String[] args){
 
+        //make it load the existing ratings from the files
         loadAll();
 
-        //start it with equal weights
-        Predictor champion = new Predictor(new double[]{2.57, 0.38, -0.81, -0.03, 0.96, 3.36, 2.69, 2.37, 3.54});
+        //start it with the given weights
+        Predictor champion = new Predictor(new double[]{2.57, 0.38, 0, 0, 0.96, 3.36, 2.69, 2.37, 3.54});
 
-//        runEvolution(champion);
-        predict(champion, "data/predict.tsv", "out/prediction.tsv");
+        //predict to a file
+//        predict(champion, "data/predict.tsv", "out/prediction.tsv");
+
+        //run the evolutionary algorithm to determine other possible weights
+        runEvolution(champion);
     }
 
     static void predict(Predictor predictor, String predictionFilePath, String outFile){

@@ -14,7 +14,7 @@ public class Predictor {
         RMSError
     }
 
-    static TestMode testMode = TestMode.RMSError;
+    static TestMode testMode = TestMode.Accuracy;
 
     double[] weights;
 
