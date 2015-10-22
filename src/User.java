@@ -40,6 +40,20 @@ public class User implements Distanceable {
         criticality = Double.NaN;
     }
 
+    public double similarMovieRating(Movie movie, HashSet<Rating> trainingSet, double weight1, double weight2){
+        double similarMovieRating = 0;
+        int totalCutoffMovies = 0;
+        for (Movie compared : this.ratedMovies(trainingSet)){
+            double distance = movie.distanceTo(compared, 0, weight1);
+
+            if (distance < weight2){
+                totalCutoffMovies ++;
+                similarMovieRating += this.ratingOf(compared, trainingSet);
+            }
+        }
+        return similarMovieRating/totalCutoffMovies;
+    }
+
     //whether this user is more or less critical than average
     public double criticality(HashSet<Rating> trainingSet){
         if (Double.isNaN(criticality)) {

@@ -12,32 +12,37 @@ public class Main {
         int sampleSize = 50;
 
         //start it with equal weights
-        Predictor champion = new Predictor(new double[]{1.27, -0.06, 0.0, 1.92, 1.75, 0.6, 1.13, -1.15});
-        double championAccuracy = champion.test(sampleSize);
+        Predictor champion = new Predictor(new double[]{2.57, 0.69, -0.41, 1.0, 0.09, 3.82, 1.82, 2.17, 4.03});
+        double championResult = champion.test(sampleSize);
 
-        System.out.println("Initial accuracy: " + championAccuracy);
+        System.out.println("Initial result: " + championResult);
 
         int testedPredictors = 0;
 
         long startTime = System.currentTimeMillis();
 
         //keep on going until it has an acceptable accuracy
-        while (championAccuracy < 0.95) {
+        while (championResult < 1000) {
             //make it recalculate the champion
-            championAccuracy = champion.test(sampleSize);
+            championResult = champion.test(sampleSize);
 
             for (Predictor child : champion.getChildren()) {
-                double childAccuracy = child.test(sampleSize);
-                if (childAccuracy > championAccuracy) {//if it had greater accuracy
+                double childResult = child.test(sampleSize);
+                if (Predictor.testMode == Predictor.TestMode.Accuracy ?
+                        (childResult > championResult) :
+                        (childResult < championResult)
+                ) {//if it had greater accuracy
                     champion = child;
-                    championAccuracy = childAccuracy;
+                    championResult = childResult;
                 }
                 testedPredictors ++;
             }
 
             //give the champion so far
             System.out.println("" +
-                            "Accuracy: " + Math.round(championAccuracy * 1000)/10.0 + "%; " +
+                    (Predictor.testMode == Predictor.TestMode.Accuracy ?
+                                "Accuracy: " + Math.round(championResult * 1000)/10.0 + "%" :
+                                "Error: " + championResult) + "; "  +
                             "Average time per test: " + ((System.currentTimeMillis() - startTime) / testedPredictors) + "ms; " +
                             "Current champion: " + champion.stringifyWeights()
             );

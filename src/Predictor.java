@@ -1,3 +1,5 @@
+import com.sun.tools.javac.code.Attribute;
+
 import java.util.*;
 import java.util.stream.DoubleStream;
 
@@ -5,6 +7,14 @@ import java.util.stream.DoubleStream;
  * Created by kaimarshland on 10/15/15.
  */
 public class Predictor {
+
+    public enum TestMode{
+        Accuracy,
+        AverageError,
+        RMSError
+    }
+
+    static TestMode testMode = TestMode.Accuracy;
 
     double[] weights;
 
@@ -58,15 +68,15 @@ public class Predictor {
         double total = 0;
         double totalAccuracy = 0;
         for (int i = 0; i < trials; i++){
-            totalAccuracy += test(train(sampleSize));
+            totalAccuracy += test(train(sampleSize), testMode);
         }
         return totalAccuracy/((double)trials);
     }
 
     //tests the given ratings. Assumes it's already been trained
-    public double test(List<Rating> ratingsToTest){
+    public double test(List<Rating> ratingsToTest, TestMode mode){
 //        double total = 0;
-        int numberAccurate = 0;
+        double result = 0;
         double sum = 0;
 
         //test all the predictions
@@ -78,13 +88,23 @@ public class Predictor {
                 double difference = Math.abs(got - expected);
                 sum++;
 
-                if (difference < 0.5){
-                    numberAccurate ++;
+                if (mode == TestMode.Accuracy) {
+                    if (difference < 0.5) {
+                        result++;
+                    }
+                } else if (mode == TestMode.AverageError){
+                    result += difference;
+                } else if (mode == TestMode.RMSError){
+                    result += difference*difference;
                 }
             }
         }
 
-        return numberAccurate/sum;
+        if (mode == TestMode.RMSError){
+            return Math.sqrt(result/sum);
+        } else {
+            return result / sum;
+        }
     }
 
     public double predict(User user, Movie movie){
@@ -93,36 +113,30 @@ public class Predictor {
         double similarUserRating = 0;
         int totalCutoffUsers = 0;
 
+        double similarUserSimilarMovie = 0;
+
         for (User compared : User.users){
 
             if (compared.getId() != user.getId()) {//don't compare to yourself
 
-                double distance = user.distanceTo(compared, weights[3], weights[4]);
+                double distance = user.distanceTo(compared, weights[4], weights[5]);
 
-                if (distance < weights[5]) {
+                if (distance < weights[6]) {
                     double rating = compared.ratingOf(movie, trainingSet);
                     if (!Double.isNaN(rating)) {
                         totalCutoffUsers++;
                         similarUserRating += rating;
+                        similarUserSimilarMovie += compared.similarMovieRating(movie, trainingSet, weights[7], weights[8]);
                     }
                 }
             }
         }
         similarUserRating /= (double)totalCutoffUsers;
+        similarUserSimilarMovie /= (double)totalCutoffUsers;
 
 
         //figure out similar movies
-        double similarMovieRating = 0;
-        int totalCutoffMovies = 0;
-        for (Movie compared : user.ratedMovies(trainingSet)){
-            double distance = movie.distanceTo(compared, 0, weights[6]);
-
-            if (distance < weights[7]){
-                totalCutoffMovies ++;
-                similarMovieRating += user.ratingOf(compared, trainingSet);
-            }
-        }
-        similarMovieRating /= (double)(totalCutoffMovies);
+        double similarMovieRating = user.similarMovieRating(movie, trainingSet, weights[7], weights[8]);
 
 
         //average rating of that movie
@@ -133,11 +147,15 @@ public class Predictor {
         if (totalCutoffUsers > 0){
             result += weights[1] * similarUserRating;
             dividedBy += weights[1];
+
+            //how similar users rated similar movies
+            result += weights[2] * similarUserSimilarMovie;
+            dividedBy += weights[2];
         }
         //how that user rated similar movies, if there were any
-        if (totalCutoffMovies > 0){
-            result += weights[2] * similarMovieRating;
-            dividedBy += weights[2];
+        if (!Double.isNaN(similarMovieRating)){
+            result += weights[3] * similarMovieRating;
+            dividedBy += weights[3];
         }
 
         return result/dividedBy; //normalize the rating
