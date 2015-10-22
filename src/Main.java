@@ -17,10 +17,10 @@ public class Main {
         Predictor champion = new Predictor(new double[]{2.57, 0.38, 0, 0, 0.96, 3.36, 2.69, 2.37, 3.54});
 
         //predict to a file
-//        predict(champion, "data/predict.tsv", "out/prediction.tsv");
+        predict(champion, "data/predict.tsv", "out/marshland_hanlon_predict.tsv");
 
         //run the evolutionary algorithm to determine other possible weights
-        runEvolution(champion);
+        //runEvolution(champion);
     }
 
     static void predict(Predictor predictor, String predictionFilePath, String outFile){
