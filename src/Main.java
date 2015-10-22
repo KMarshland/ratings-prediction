@@ -36,6 +36,11 @@ public class Main {
                             User.findById(Integer.parseInt(parts[0])),
                             Movie.findById(Integer.parseInt(parts[1]))
                     ));
+                    if (prediction <= 0){
+                        prediction = 1;
+                    } else if (prediction > 5){
+                        prediction = 5;
+                    }
 
                     writer.println(parts[0] + "\t" + parts[1] + "\t" + prediction);
 
