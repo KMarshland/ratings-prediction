@@ -14,15 +14,15 @@ We use an evolutionary algorithm to determine the weights.
 ## Results
 
 Our evolutionary algorithm determined the following weights:
-The average rating for that movie plus whether that user is more or less critical than average: 2.57
-How similar users rated that movie: 0.38 
-How similar users rated similar movies: 0.00
-How that user rated similar movies: 0.00 
-Gender weight: 0.96 
-Age weight: 3.36
-How similar users have to be in order to be taken into account: 2.69 
-Genre weight: 2.37
-How similar movies have to be in order to be taken into account: 3.54
+- The average rating for that movie plus whether that user is more or less critical than average: 2.57
+- How similar users rated that movie: 0.38 
+- How similar users rated similar movies: 0.00
+- How that user rated similar movies: 0.00 
+- Gender weight: 0.96 
+- Age weight: 3.36
+- How similar users have to be in order to be taken into account: 2.69 
+- Genre weight: 2.37
+- How similar movies have to be in order to be taken into account: 3.54
 
 This implies a couple conclusions:
 
